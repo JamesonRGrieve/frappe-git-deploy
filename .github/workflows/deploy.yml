@@ -31,11 +31,11 @@ jobs:
       group: git-deploy-${{ inputs.site_url }}-${{ inputs.app }}
       cancel-in-progress: false
     steps:
-      # The client at the same commit as this workflow file.
+      # The client from main, the ref callers use for this workflow (see the usage above).
       - uses: actions/checkout@v4
         with:
           repository: JamesonRGrieve/frappe-git-deploy
-          ref: ${{ github.job_workflow_sha }}
+          ref: main
           path: frappe-git-deploy
       - uses: actions/setup-python@v5
         with:
