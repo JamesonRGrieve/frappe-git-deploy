@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: format + lint
+        run: uvx ruff format --check . && uvx ruff check .
+      - name: tests
+        run: uv run --no-project --python 3.14 --with pytest python -I -m pytest

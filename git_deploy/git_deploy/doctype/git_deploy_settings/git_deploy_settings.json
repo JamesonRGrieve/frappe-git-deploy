@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "creation": "2026-10-21 12:00:00.000000",
+ "description": "Which apps CI may deploy to this site on push, from which branch, and the shared webhook secret. The host's deploy service keeps its own allow-list too.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "branch",
+  "apps",
+  "webhook_secret"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "description": "Accept deploy requests.",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "default": "main",
+   "description": "Only pushes to this branch are deployed.",
+   "fieldname": "branch",
+   "fieldtype": "Data",
+   "label": "Branch"
+  },
+  {
+   "description": "Installed apps CI may deploy, one app name per line.",
+   "fieldname": "apps",
+   "fieldtype": "Small Text",
+   "label": "Apps"
+  },
+  {
+   "description": "The HMAC-SHA256 secret CI signs each request with.",
+   "fieldname": "webhook_secret",
+   "fieldtype": "Password",
+   "label": "Webhook Secret"
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-10-21 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Git Deploy",
+ "name": "Git Deploy Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

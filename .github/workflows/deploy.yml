@@ -1,0 +1,49 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Reusable deploy job for a Frappe app repo. The caller runs its own tests first and then:
+#
+#   deploy:
+#     needs: test
+#     uses: JamesonRGrieve/frappe-git-deploy/.github/workflows/deploy.yml@main
+#     with: { site_url: https://dev-erp.example, app: my_app }
+#     secrets: { GIT_DEPLOY_SECRET: ${{ secrets.GIT_DEPLOY_SECRET }} }
+#
+# It signs a request for the pushed commit, posts it to the site and waits for the host's deploy
+# service to report that commit; the job fails if the deploy fails, rolls back or never finishes.
+name: deploy
+on:
+  workflow_call:
+    inputs:
+      site_url:
+        type: string
+        required: true
+      app:
+        type: string
+        required: true
+    secrets:
+      GIT_DEPLOY_SECRET:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # One deploy per site and app at a time; a newer push waits rather than cancelling a running deploy.
+    concurrency:
+      group: git-deploy-${{ inputs.site_url }}-${{ inputs.app }}
+      cancel-in-progress: false
+    steps:
+      # The client at the same commit as this workflow file.
+      - uses: actions/checkout@v4
+        with:
+          repository: JamesonRGrieve/frappe-git-deploy
+          ref: ${{ github.job_workflow_sha }}
+          path: frappe-git-deploy
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: deploy ${{ inputs.app }} @ ${{ github.sha }}
+        working-directory: frappe-git-deploy
+        env:
+          GIT_DEPLOY_SECRET: ${{ secrets.GIT_DEPLOY_SECRET }}
+          SITE_URL: ${{ inputs.site_url }}
+          APP: ${{ inputs.app }}
+        run: python -m git_deploy.client "$SITE_URL" "$APP" "$GITHUB_SHA" "$GITHUB_REF"

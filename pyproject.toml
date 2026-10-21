@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+[project]
+name = "git_deploy"
+authors = [
+    { name = "Zephyrex Technologies Limited", email = "jameson@zephyrex.ca" }
+]
+description = "Deploy Frappe apps to a site when CI pushes to their branch: a signed webhook queues the deploy, a root service on the host runs it"
+requires-python = ">=3.14,<3.15"
+readme = "README.md"
+license = "AGPL-3.0-or-later"
+dynamic = ["version"]
+dependencies = [
+    # "frappe~=16.0.0" # Installed and managed by bench.
+]
+
+[project.urls]
+Repository = "https://github.com/JamesonRGrieve/frappe-git-deploy"
+
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.bench.frappe-dependencies]
+frappe = ">=16.0.0,<17.0.0"
+
+# Pure-logic unit tests (no bench): the protocol, the request/status hand-off and the CI client.
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 110
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "I", "UP", "B"]
+ignore = ["E101", "W191", "E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "tab"
